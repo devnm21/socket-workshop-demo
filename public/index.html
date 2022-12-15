@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<body>
+    <!-- <h1>Real-time memory monitor <span id="memory-usage"> </span></h1> -->
+    <h1>Simple Forum</h1>
+    <input id="message-input" />
+    <button id="send">Send</button>
+
+    <div id="messages">
+        <p>Hello</p>
+    </div>
+</body>
+<script>
+    const socket = io('http://localhost:5000')
+    socket.on('new-message', function(data){
+        addComment(data.message)
+    })
+
+    function addComment (text) {
+        const para = document.createElement('p')
+        const textNode = document.createTextNode(text)
+        para.appendChild(textNode)
+        const messagesDiv = document.getElementById('messages')
+        messagesDiv.appendChild(para)
+        console.log({messagesDiv})
+    }
+
+    function sendComment () {
+        socket.emit('add-message', {
+            message: document.getElementById('message-input').value
+        })
+    }
+
+    document.getElementById('send').addEventListener('click', sendComment)
+</script>
+</html>
